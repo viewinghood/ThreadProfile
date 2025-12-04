@@ -29,13 +29,13 @@
 __title__   = "ThreadProfile"
 __author__  = "Mark Ganson <TheMarkster>"
 __url__     = "https://github.com/mwganson/ThreadProfile"
-__date__    = "2025.08.29"
-__version__ = "1.97"
+__date__    = "2025.12.04"
+__version__ = "1.98"
 
 from fractions import Fraction
 from numbers import Rational
 
-version = 1.97
+version = 1.98
 
 import FreeCAD, FreeCADGui, Part, os
 from PySide import QtCore, QtGui
@@ -1048,7 +1048,7 @@ class ThreadProfileCreateObjectCommandClass(object):
                 unf(Fraction(5, 16), 18),
                 unf(Fraction(3, 8), 16),
                 unf(Fraction(7, 16), 14),
-                unf(Fraction(1, 2), 13),
+                unf(Fraction(1, 2), 20),
                 unf(Fraction(9, 16), 12),
                 unf(Fraction(5, 8), 11),
                 unf(Fraction(3, 4), 10),
