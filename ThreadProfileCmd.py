@@ -343,9 +343,6 @@ class _ThreadProfile(_DraftObject):
             obj.Placement = plm
         obj.positionBySupport()
 
-    # for compatibility with older versions
-    _ViewProviderBSpline = _ViewProviderWire
-
 #######################################################################################
 # Keep Toolbar active even after leaving workbench
 
