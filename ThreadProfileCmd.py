@@ -45,10 +45,11 @@ import Draft
 from FreeCAD import Base
 import Draft_rc
 from PySide.QtCore import QT_TRANSLATE_NOOP
-from Draft import _DraftObject, _ViewProviderWire, formatObject, select
+from Draft import _DraftObject, formatObject, select
 
 if FreeCAD.GuiUp:
     from FreeCAD import Gui
+    from Draft import _ViewProviderWire
 
 def tr(context, text):
     try:
