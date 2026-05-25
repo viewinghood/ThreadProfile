@@ -128,6 +128,8 @@ The internal_data and external_data list properties define the radius of the Thr
 
 
 #### Release notes:<br/>
+* 2026.05.25 (version 1.99)<br/>
+* fix headless import (thanks to SebKuzminsky)
 * 2025.12.04 (version 1.98)<br/>
 * Add UNF 1/2-20 to presets, addresses issue #77
 * 2025.09.02 (version 1.97)<br/>
