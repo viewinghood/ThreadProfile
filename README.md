@@ -42,6 +42,10 @@ There are other diameter / pitch combinations in the standard than are provided 
 <img src="https://github.com/mwganson/ThreadProfile/blob/master/Resources/icons/CreateBottleObject.png" alt="create bottle object"><br/>
 This creates a bottle thread object (SP4xx M type) 45 degree / 10 degree buttress thread.<br/>
 
+## Create PG thread profile Command
+<img src="Resources/icons/CreatePGObject.svg" alt="create PG object"><br/>
+This creates a PG (Panzergewinde / DIN 40430) thread profile with an 80 degree included angle.  Presets cover common sizes from PG 7 to PG 48.  Dimensions are based on published PG charts (see the British Metrics PG chart linked from the Open Online Calculator command).  External presets include a small print clearance (0.15 mm) similar to the bottle thread presets; adjust the minor diameter if you need a tighter or looser fit.<br/>
+
 ## Make Helix Command
 <img src="https://github.com/mwganson/ThreadProfile/blob/master/Resources/icons/MakeHelix.svg" alt="make helix"><br/>
 The Make Helix command creates a Helix and sets its Pitch property to match the Pitch property of the ThreadProfile object.  This property is linked parametrically, thus any change to the ThreadProfile.Pitch property will also cause the Helix.Pitch property to update itself.  We also set the Helix.Height property to ThreadProfile.Pitch * ThreadProfile.ThreadCount, thus ensuring the Helix.Height property is such that the thread produced in the sweep will have Thread Count threads.  This is also parametrically linked.  As of v1.70 the helix will be attached to the object the thread profile is attached to via expressions.  That way if you attach the thread profile to something else after creating the helix the helix will also attach itself to the same object in the same map mode.<br/>
@@ -59,7 +63,7 @@ Be wary of coplanar issues when cutting internal threads out of existing materia
 
 ## Open Online Calculator Command
 <img src="https://github.com/mwganson/ThreadProfile/blob/master/Resources/icons/OpenOnlineCalculator.svg" alt="open online calculator"><br/>
-Opens on online calculator for the metric sizes or for the ANSI UN and UNR inch sizes or for the ANSI Buttress sizes in the default browser.  It is possible (I think) that FreeCAD might not have permission to do this.  If so, then it will likely fail.  Use the calculator to get the minor diameter for the thread you wish to make.  For inch sizes, the 2A and 2B tolerances are for the normal fit.  For Buttress threads class 2 is normal, class 3 is tighter fit.  For metric size v threads the 6g tolerance is for normal fit.  Typically there will be 2 minor diameters to select from: a minimum and a maximum.  If you make the internal thread a little bit smaller the fit will be tighter.  If you make the external thread a little bit smaller the fit will be looser.  A good way to check the fit is to make the nut and the screw at the same time, then use the Part workbench cross-section tool to check the fit.
+Opens an online calculator for the metric sizes, ANSI UN and UNR inch sizes, ANSI Buttress sizes, or the PG (DIN 40430) thread chart (British Metrics) in the default browser.  It is possible (I think) that FreeCAD might not have permission to do this.  If so, then it will likely fail.  Use the calculator to get the minor diameter for the thread you wish to make.  For inch sizes, the 2A and 2B tolerances are for the normal fit.  For Buttress threads class 2 is normal, class 3 is tighter fit.  For metric size v threads the 6g tolerance is for normal fit.  Typically there will be 2 minor diameters to select from: a minimum and a maximum.  If you make the internal thread a little bit smaller the fit will be tighter.  If you make the external thread a little bit smaller the fit will be looser.  A good way to check the fit is to make the nut and the screw at the same time, then use the Part workbench cross-section tool to check the fit.
 
 ## Parameterization Property
 This property can change the shape of the threadprofile object.  If you are not satisfied with the looks of the threads when viewed up close after zooming in, you can try modifying this property to see what difference it makes.  Default is 1.0.  It's value can range from 0.0 to 1.0.
@@ -77,7 +81,7 @@ This sets the ViewObject.Deviation property of the Body if in Part Design or the
 This is the pitch for the thread.  You also need to set this in the Helix Pitch property.  If you wish to make ANSI threads, such as 1/4-20, for example, you would set this value to 25.4/20 if you are in mm units or 1/20 if you are using inch units.  I keep FreeCAD in mm units, so I would use 25.4/20 for the Pitch for that thread.<br/>
 
 ## Minor Diameter
-This is the minor diameter of your thread.  This is *NOT* the nominal diameter.  You need to look this value up and use the one for your desired nominal diameter, pitch, and fit tolerance.  Here are links to online calculators for <a href="https://amesweb.info/Screws/AsmeUnifiedInchScrewThread.aspx">Unified Inch Screwthreads</a>, <a href="https://amesweb.info/Screws/IsoMetricScrewThread.aspx">Metric</a>, and for <a href="https://amesweb.info/Screws/ButtressInchScrewThreads.aspx">ANSI Buttress</a><br/>
+This is the minor diameter of your thread.  This is *NOT* the nominal diameter.  You need to look this value up and use the one for your desired nominal diameter, pitch, and fit tolerance.  Here are links to online calculators for <a href="https://amesweb.info/Screws/AsmeUnifiedInchScrewThread.aspx">Unified Inch Screwthreads</a>, <a href="https://amesweb.info/Screws/IsoMetricScrewThread.aspx">Metric</a>, <a href="https://amesweb.info/Screws/ButtressInchScrewThreads.aspx">ANSI Buttress</a>, and the <a href="https://www.britishmetrics.com/images/pdf/technical/pgstd_4.htm">PG (DIN 40430) chart</a><br/>
 
 ## Continuity
 What is this?  This is a property of the underlying BSpline object.  This is readonly and is only included for informational purposes.  Normally, this should be C2 continuity.  You can read more about smoothness <a href="https://en.wikipedia.org/wiki/Smoothness">here</a>.<br/>
@@ -128,6 +132,9 @@ The internal_data and external_data list properties define the radius of the Thr
 
 
 #### Release notes:<br/>
+* 2026.07.28 (version 2.00)<br/>
+* Add PG (Panzergewinde / DIN 40430) 80 degree thread profile presets (PG 7 to PG 48), addresses issue #79
+* Add British Metrics PG chart link to Open Online Calculator
 * 2026.05.25 (version 1.99)<br/>
 * fix headless import (thanks to SebKuzminsky)
 * 2025.12.04 (version 1.98)<br/>
