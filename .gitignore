@@ -2,3 +2,5 @@
 *.bak
 .vs/
 .idea/
+*.code-workspace
+.vscode/
