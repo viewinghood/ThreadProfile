@@ -1,0 +1,70 @@
+=== 3185K94 STEP import ===
+file: 3185K94_PG-21 Threaded Black Locknut for Continuous-Flex Plastic Conduit Fitting.STEP
+bytes: 354643
+bbox XYZ: -19.800..19.800 / -19.800..19.800 / -4.092..5.042
+extents: 39.600 x 39.600 x 9.134 mm
+slice Y=0 wires: 2
+slice samples: 6240
+r 13.444..18.000  d 26.888..36.000
+z -3.500..3.559
+
+=== radius histogram ===
+  r= 13.50 d= 27.00 n=1296 ##################################################
+  r= 13.75 d= 27.50 n= 778 ##################################################
+  r= 14.00 d= 28.00 n=1038 ##################################################
+  r= 14.25 d= 28.50 n=1710 ##################################################
+  r= 14.50 d= 29.00 n=  38 ############
+  r= 14.75 d= 29.50 n=  36 ############
+  r= 15.00 d= 30.00 n=  36 ############
+  r= 15.25 d= 30.50 n=  36 ############
+  r= 15.50 d= 31.00 n=  38 ############
+  r= 15.75 d= 31.50 n=  36 ############
+  r= 16.00 d= 32.00 n=  36 ############
+  r= 16.25 d= 32.50 n=  38 ############
+  r= 16.50 d= 33.00 n=  36 ############
+  r= 16.75 d= 33.50 n=  36 ############
+  r= 17.00 d= 34.00 n= 288 ##################################################
+  r= 17.25 d= 34.50 n= 126 ##########################################
+  r= 17.50 d= 35.00 n= 126 ##########################################
+  r= 17.75 d= 35.50 n= 180 ##################################################
+  r= 18.00 d= 36.00 n= 332 ##################################################
+
+=== PG21 band (r=12.8..14.6, n=4856) ===
+inward tips (female minor): r=13.444  d=26.888  n=55
+outward roots (female major): r=14.150  d=28.300  n=82
+depth H1~0.706  (DIN 0.76)
+
+=== wide PG21 (r=12.5..15.0, n=4914) ===
+inward tips (female minor): r=13.444  d=26.888  n=55
+outward roots (female major): r=14.150  d=28.300  n=82
+depth H1~0.706  (DIN 0.76)
+
+=== tight PG21 (r=13.0..14.4, n=4826) ===
+inward tips (female minor): r=13.444  d=26.888  n=55
+outward roots (female major): r=14.150  d=28.300  n=82
+depth H1~0.706  (DIN 0.76)
+
+=== broad inner (r=10.0..16.0, n=5060) ===
+inward tips (female minor): r=13.444  d=26.888  n=55
+outward roots (female major): r=14.150  d=28.300  n=82
+depth H1~0.706  (DIN 0.76)
+
+=== WB PG21 External (PG_tests Sweep_cs003) ===
+major d=28.155 (expect ~28.15)
+minor d=26.573 (expect ~26.63)
+
+=== Chart / fit ===
+DIN PG21: major 28.3 / minor 26.78 / P=1.5875 / H1=0.76
+WB ext -0.15: major 28.15 / minor 26.63
+McMaster female: minor d=26.888  major d=28.300
+WB/DIN male:     major d=28.155  minor d=26.573
+(female major - male major)/2 = 0.072 mm/side
+(female minor - male minor)/2 = 0.158 mm/side
+
+=== VERDICT ===
+DIN minor match: True (err +0.108 mm)
+DIN major match: True (err -0.000 mm)
+3185K94 ~ PG21 female -- correct mate for WB PG21 External
+Confirms 7805K45 visual gap was M32 female, not a bad PG21 formula
+
+saved c:\Users\ritchie\ThreadDefinitions\Mark\3185K94_PG21_locknut.FCStd
