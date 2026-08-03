@@ -1,0 +1,10 @@
+1095K104 1/4-26 BSF: maj 6.350/6.350 min 4.941/5.099 h 0.704/0.626 h/P 0.7211 P nan/0.9769
+1095K105 3/8-20 BSF: maj 9.525/9.525 min 7.695/7.899 h 0.915/0.813 h/P 0.7204 P nan/1.2700
+2408K31 5/16-22 BSF: maj 7.937/7.938 min 6.274/6.459 h 0.831/0.739 h/P 0.7202 P nan/1.1545
+1095K122 1/4-26 BSF 90: maj 6.350/6.350 min 4.943/5.099 h 0.704/0.626 h/P 0.7204 P nan/0.9769
+
+McMaster CAD depth/P ≈ 0.72 = (3/4)·H_whitworth (simplified truncated V)
+True Whitworth working depth h/P = (2/3)·H = 0.640327
+H = 0.960491
+Major diameters match chart exactly; roots deeper than Whitworth basic.
+Form angle still Whitworth/BSF family; not a full rounded-crest CAD.
