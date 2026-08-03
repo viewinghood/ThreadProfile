@@ -136,6 +136,9 @@ The internal_data and external_data list properties define the radius of the Thr
 
 
 #### Release notes:<br/>
+* 2026.08.03 (version 2.01)<br/>
+* Add BSW / Whitworth (BS 84) 55 degree rounded thread profile presets
+* Add Machining Doctor BSW chart link to Open Online Calculator
 * 2026.07.28 (version 2.00)<br/>
 * Add PG (Panzergewinde / DIN 40430) 80 degree thread profile presets (PG 7 to PG 48), addresses issue #79
 * Add British Metrics PG chart link to Open Online Calculator
