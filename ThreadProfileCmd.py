@@ -30,12 +30,12 @@ __title__   = "ThreadProfile"
 __author__  = "Mark Ganson <TheMarkster>"
 __url__     = "https://github.com/mwganson/ThreadProfile"
 __date__    = "2026.07.28"
-__version__ = "2.01"
+__version__ = "2.02"
 
 from fractions import Fraction
 from numbers import Rational
 
-version = 2.01
+version = 2.02
 
 import FreeCAD, FreeCADGui, Part, os
 from PySide import QtCore, QtGui
@@ -579,7 +579,7 @@ class ThreadProfileOpenOnlineCalculatorCommandClass(object):
 
     def Activated(self):
         import webbrowser
-        items = ["Open online metric calculator", "Open online unified inch calculator", "Open online ANSI buttress thread calculator", "Open PG (DIN 40430) thread chart (British Metrics)", "Open BSW / Whitworth thread chart", "Cancel"]
+        items = ["Open online metric calculator", "Open online unified inch calculator", "Open online ANSI buttress thread calculator", "Open PG (DIN 40430) thread chart (British Metrics)", "Open BSW Whitworth thread chart", "Open BSF Whitworth fine thread chart", "Cancel"]
         window = QtGui.QApplication.activeWindow()
         item,ok = QtGui.QInputDialog.getItem(window,'ThreadProfile','Open online calculator in default browser?',items,0,False)
         if ok and item == items[0]:
@@ -592,6 +592,8 @@ class ThreadProfileOpenOnlineCalculatorCommandClass(object):
             webbrowser.open('https://www.britishmetrics.com/images/pdf/technical/pgstd_4.htm')
         elif ok and item == items[4]:
             webbrowser.open('https://www.machiningdoctor.com/charts/bsw/')
+        elif ok and item == items[5]:
+            webbrowser.open('https://www.machiningdoctor.com/charts/bsf/')
 
         return
 
@@ -1466,24 +1468,24 @@ class ThreadProfileCreatePGObjectCommandClass(ThreadProfileCreateObjectCommandCl
 #Gui.addCommand("ThreadProfileCreatePGObject", ThreadProfileCreatePGObjectCommandClass())
 
 ####################################################################################
-# Create the BSW / Whitworth (55 degree) rounded thread profile object
+# Create Whitworth (BSW/BSF) 55 degree rounded thread profile object
 
 class ThreadProfileCreateBSWObjectCommandClass(ThreadProfileCreateObjectCommandClass):
-    """Create BSW (British Standard Whitworth) thread profile command"""
+    """Create Whitworth (BSW coarse / BSF fine) thread profile command"""
 
     def GetResources(self):
         return {'Pixmap'  : os.path.join( iconPath , 'CreateBSWObject.svg') ,
-            'MenuText': "&Create BSW Whitworth thread profile" ,
-            'ToolTip' : "Create BSW / Whitworth 55 degree rounded ThreadProfile object"}
+            'MenuText': "&Create Whitworth (BSW/BSF) thread profile" ,
+            'ToolTip' : "Create Whitworth 55 degree rounded ThreadProfile (BSW + BSF presets)"}
 
     def Activated(self):
         doc = FreeCAD.ActiveDocument
-        doc.openTransaction("Create BSW ThreadProfile")
+        doc.openTransaction("Create Whitworth ThreadProfile")
         try:
             self.makeBSWThreadProfile()
         except Exception as e:
             FreeCAD.Console.PrintError(
-                "ThreadProfile Error: Exception creating BSW thread profile object.\n\n" +
+                "ThreadProfile Error: Exception creating Whitworth thread profile object.\n\n" +
                 '\n'.join(traceback.format_exception(e)) + "\n"
             )
             QtGui.QApplication.restoreOverrideCursor()
@@ -1498,7 +1500,7 @@ class ThreadProfileCreateBSWObjectCommandClass(ThreadProfileCreateObjectCommandC
 
     def getHelp(self):
         return ["Created with ThreadProfile (v"+str(version)+") workbench.",
-                "This is a BSW / Whitworth 55 degree rounded thread profile",
+                "This is a Whitworth 55 degree rounded thread profile (BSW/BSF)",
                 "for sweeping along a helix in either the",
                 "Part or Part Design workbench.",
                 "installation of the ThreadProfile workbench is required.",
@@ -1506,9 +1508,10 @@ class ThreadProfileCreateBSWObjectCommandClass(ThreadProfileCreateObjectCommandC
 
     def makeBSWThreadProfile(self):
         # Preset format: [name, pitch_mm, external_minor_mm, internal_minor_mm]
-        # Basic Whitworth: minor = major - 2*h, h = (2/3)*H, H = P/(2*tan(27.5 deg))
-        # h/P = 0.640327. External minus 0.15 mm print clearance (cf. PG/Bottle).
-        def bsw_preset(name, major_in, tpi, print_clearance=0.15):
+        # Same Whitworth form for BSW (coarse) and BSF (fine):
+        # minor = major - 2*h, h = (2/3)*H, H = P/(2*tan(27.5 deg)), h/P = 0.640327.
+        # External minus 0.15 mm print clearance (cf. PG/Bottle).
+        def whitworth_preset(name, major_in, tpi, print_clearance=0.15):
             major = float(major_in) * 25.4
             pitch = 25.4 / float(tpi)
             internal_minor = major - 2.0 * 0.640327375657 * pitch
@@ -1517,46 +1520,77 @@ class ThreadProfileCreateBSWObjectCommandClass(ThreadProfileCreateObjectCommandC
 
         bsw_presets_data = [
             ["BSW Whitworth presets", 0, 0, 0],
-            bsw_preset("1/16 in - 60 BSW", Fraction(1, 16), 60),
-            bsw_preset("3/32 in - 48 BSW", Fraction(3, 32), 48),
-            bsw_preset("1/8 in - 40 BSW", Fraction(1, 8), 40),
-            bsw_preset("5/32 in - 32 BSW", Fraction(5, 32), 32),
-            bsw_preset("3/16 in - 24 BSW", Fraction(3, 16), 24),
-            bsw_preset("7/32 in - 24 BSW", Fraction(7, 32), 24),
-            bsw_preset("1/4 in - 20 BSW", Fraction(1, 4), 20),
-            bsw_preset("5/16 in - 18 BSW", Fraction(5, 16), 18),
-            bsw_preset("3/8 in - 16 BSW", Fraction(3, 8), 16),
-            bsw_preset("7/16 in - 14 BSW", Fraction(7, 16), 14),
-            bsw_preset("1/2 in - 12 BSW", Fraction(1, 2), 12),
-            bsw_preset("9/16 in - 12 BSW", Fraction(9, 16), 12),
-            bsw_preset("5/8 in - 11 BSW", Fraction(5, 8), 11),
-            bsw_preset("3/4 in - 10 BSW", Fraction(3, 4), 10),
-            bsw_preset("7/8 in - 9 BSW", Fraction(7, 8), 9),
-            bsw_preset("1 in - 8 BSW", Fraction(1, 1), 8),
-            bsw_preset("1 1/8 in - 7 BSW", Fraction(9, 8), 7),
-            bsw_preset("1 1/4 in - 7 BSW", Fraction(5, 4), 7),
-            bsw_preset("1 3/8 in - 6 BSW", Fraction(11, 8), 6),
-            bsw_preset("1 1/2 in - 6 BSW", Fraction(3, 2), 6),
-            bsw_preset("1 5/8 in - 5 BSW", Fraction(13, 8), 5),
-            bsw_preset("1 3/4 in - 5 BSW", Fraction(7, 4), 5),
-            bsw_preset("1 7/8 in - 4.5 BSW", Fraction(15, 8), 4.5),
-            bsw_preset("2 in - 4.5 BSW", Fraction(2, 1), 4.5),
-            bsw_preset("2 1/4 in - 4 BSW", Fraction(9, 4), 4),
-            bsw_preset("2 1/2 in - 4 BSW", Fraction(5, 2), 4),
-            bsw_preset("2 3/4 in - 3.5 BSW", Fraction(11, 4), 3.5),
-            bsw_preset("3 in - 3.5 BSW", Fraction(3, 1), 3.5),
-            bsw_preset("3 1/4 in - 3.5 BSW", Fraction(13, 4), 3.5),
-            bsw_preset("3 1/2 in - 3.5 BSW", Fraction(7, 2), 3.5),
-            bsw_preset("3 3/4 in - 3 BSW", Fraction(15, 4), 3),
-            bsw_preset("4 in - 3 BSW", Fraction(4, 1), 3),
-            bsw_preset("4 1/4 in - 2.875 BSW", Fraction(17, 4), 2.875),
-            bsw_preset("4 1/2 in - 2.875 BSW", Fraction(9, 2), 2.875),
-            bsw_preset("4 3/4 in - 2.75 BSW", Fraction(19, 4), 2.75),
-            bsw_preset("5 in - 2.75 BSW", Fraction(5, 1), 2.75),
-            bsw_preset("5 1/4 in - 2.625 BSW", Fraction(21, 4), 2.625),
-            bsw_preset("5 1/2 in - 2.625 BSW", Fraction(11, 2), 2.625),
-            bsw_preset("5 3/4 in - 2.5 BSW", Fraction(23, 4), 2.5),
-            bsw_preset("6 in - 2.5 BSW", Fraction(6, 1), 2.5),
+            whitworth_preset("1/16 in - 60 BSW", Fraction(1, 16), 60),
+            whitworth_preset("3/32 in - 48 BSW", Fraction(3, 32), 48),
+            whitworth_preset("1/8 in - 40 BSW", Fraction(1, 8), 40),
+            whitworth_preset("5/32 in - 32 BSW", Fraction(5, 32), 32),
+            whitworth_preset("3/16 in - 24 BSW", Fraction(3, 16), 24),
+            whitworth_preset("7/32 in - 24 BSW", Fraction(7, 32), 24),
+            whitworth_preset("1/4 in - 20 BSW", Fraction(1, 4), 20),
+            whitworth_preset("5/16 in - 18 BSW", Fraction(5, 16), 18),
+            whitworth_preset("3/8 in - 16 BSW", Fraction(3, 8), 16),
+            whitworth_preset("7/16 in - 14 BSW", Fraction(7, 16), 14),
+            whitworth_preset("1/2 in - 12 BSW", Fraction(1, 2), 12),
+            whitworth_preset("9/16 in - 12 BSW", Fraction(9, 16), 12),
+            whitworth_preset("5/8 in - 11 BSW", Fraction(5, 8), 11),
+            whitworth_preset("3/4 in - 10 BSW", Fraction(3, 4), 10),
+            whitworth_preset("7/8 in - 9 BSW", Fraction(7, 8), 9),
+            whitworth_preset("1 in - 8 BSW", Fraction(1, 1), 8),
+            whitworth_preset("1 1/8 in - 7 BSW", Fraction(9, 8), 7),
+            whitworth_preset("1 1/4 in - 7 BSW", Fraction(5, 4), 7),
+            whitworth_preset("1 3/8 in - 6 BSW", Fraction(11, 8), 6),
+            whitworth_preset("1 1/2 in - 6 BSW", Fraction(3, 2), 6),
+            whitworth_preset("1 5/8 in - 5 BSW", Fraction(13, 8), 5),
+            whitworth_preset("1 3/4 in - 5 BSW", Fraction(7, 4), 5),
+            whitworth_preset("1 7/8 in - 4.5 BSW", Fraction(15, 8), 4.5),
+            whitworth_preset("2 in - 4.5 BSW", Fraction(2, 1), 4.5),
+            whitworth_preset("2 1/4 in - 4 BSW", Fraction(9, 4), 4),
+            whitworth_preset("2 1/2 in - 4 BSW", Fraction(5, 2), 4),
+            whitworth_preset("2 3/4 in - 3.5 BSW", Fraction(11, 4), 3.5),
+            whitworth_preset("3 in - 3.5 BSW", Fraction(3, 1), 3.5),
+            whitworth_preset("3 1/4 in - 3.5 BSW", Fraction(13, 4), 3.5),
+            whitworth_preset("3 1/2 in - 3.5 BSW", Fraction(7, 2), 3.5),
+            whitworth_preset("3 3/4 in - 3 BSW", Fraction(15, 4), 3),
+            whitworth_preset("4 in - 3 BSW", Fraction(4, 1), 3),
+            whitworth_preset("4 1/4 in - 2.875 BSW", Fraction(17, 4), 2.875),
+            whitworth_preset("4 1/2 in - 2.875 BSW", Fraction(9, 2), 2.875),
+            whitworth_preset("4 3/4 in - 2.75 BSW", Fraction(19, 4), 2.75),
+            whitworth_preset("5 in - 2.75 BSW", Fraction(5, 1), 2.75),
+            whitworth_preset("5 1/4 in - 2.625 BSW", Fraction(21, 4), 2.625),
+            whitworth_preset("5 1/2 in - 2.625 BSW", Fraction(11, 2), 2.625),
+            whitworth_preset("5 3/4 in - 2.5 BSW", Fraction(23, 4), 2.5),
+            whitworth_preset("6 in - 2.5 BSW", Fraction(6, 1), 2.5),
+            ["BSF Fine Whitworth presets", 0, 0, 0],
+            whitworth_preset("3/16 in - 32 BSF", Fraction(3, 16), 32),
+            whitworth_preset("7/32 in - 28 BSF", Fraction(7, 32), 28),
+            whitworth_preset("1/4 in - 26 BSF", Fraction(1, 4), 26),
+            whitworth_preset("9/32 in - 26 BSF", Fraction(9, 32), 26),
+            whitworth_preset("5/16 in - 22 BSF", Fraction(5, 16), 22),
+            whitworth_preset("3/8 in - 20 BSF", Fraction(3, 8), 20),
+            whitworth_preset("7/16 in - 18 BSF", Fraction(7, 16), 18),
+            whitworth_preset("1/2 in - 16 BSF", Fraction(1, 2), 16),
+            whitworth_preset("9/16 in - 16 BSF", Fraction(9, 16), 16),
+            whitworth_preset("5/8 in - 14 BSF", Fraction(5, 8), 14),
+            whitworth_preset("11/16 in - 14 BSF", Fraction(11, 16), 14),
+            whitworth_preset("3/4 in - 12 BSF", Fraction(3, 4), 12),
+            whitworth_preset("13/16 in - 12 BSF", Fraction(13, 16), 12),
+            whitworth_preset("7/8 in - 11 BSF", Fraction(7, 8), 11),
+            whitworth_preset("1 in - 10 BSF", Fraction(1, 1), 10),
+            whitworth_preset("1 1/8 in - 9 BSF", Fraction(9, 8), 9),
+            whitworth_preset("1 1/4 in - 9 BSF", Fraction(5, 4), 9),
+            whitworth_preset("1 3/8 in - 8 BSF", Fraction(11, 8), 8),
+            whitworth_preset("1 1/2 in - 8 BSF", Fraction(3, 2), 8),
+            whitworth_preset("1 5/8 in - 8 BSF", Fraction(13, 8), 8),
+            whitworth_preset("1 3/4 in - 7 BSF", Fraction(7, 4), 7),
+            whitworth_preset("2 in - 7 BSF", Fraction(2, 1), 7),
+            whitworth_preset("2 1/4 in - 6 BSF", Fraction(9, 4), 6),
+            whitworth_preset("2 1/2 in - 6 BSF", Fraction(5, 2), 6),
+            whitworth_preset("2 3/4 in - 6 BSF", Fraction(11, 4), 6),
+            whitworth_preset("3 in - 5 BSF", Fraction(3, 1), 5),
+            whitworth_preset("3 1/4 in - 5 BSF", Fraction(13, 4), 5),
+            whitworth_preset("3 1/2 in - 4.5 BSF", Fraction(7, 2), 4.5),
+            whitworth_preset("3 3/4 in - 4.5 BSF", Fraction(15, 4), 4.5),
+            whitworth_preset("4 in - 4.5 BSF", Fraction(4, 1), 4.5),
         ]
 
         internal_bsw_data = [7.0235e-06,2.8096156e-05,6.3224439e-05,0.000112419143,0.000175695404,0.000253072724,0.000344574997,0.000450230551,0.000570072189,0.000704137242,0.000852467625,0.001015109907,0.001192115384,0.001383540158,0.001589445235,0.001809896617,0.002044965415,0.002294727969,0.002559265971,0.00283866661,0.00313302272,0.003442432941,0.003767001897,0.004106840381,0.004462065559,0.004832801187,0.005219177845,0.005621333185,0.006039412204,0.006473567528,0.006923959724,0.007390757633,0.007874138727,0.008374289487,0.008891405824,0.009425693514,0.009977368677,0.01054665829,0.011133800739,0.011739046413,0.012362658348,0.013004912921,0.013666100597,0.014346526745,0.015046512514,0.015766395791,0.016506532234,0.017267296402,0.018049082983,0.018852308136,0.019677410952,0.020524855061,0.021395130387,0.02228875508,0.023206277642,0.024148279271,0.025115376448,0.02610822381,0.027127517335,0.028173997886,0.029248455166,0.03035173215,0.031484730046,0.032648413892,0.033843818866,0.035072057441,0.036334327518,0.037631921713,0.038966237992,0.040338791926,0.041751230845,0.043205350298,0.044703113271,0.046246672765,0.047838398482,0.049480908562,0.051177107608,0.052930232586,0.054743908702,0.05662221804,0.058569784724,0.060591881764,0.062694566739,0.064884856475,0.067170955378,0.069562559101,0.072071266405,0.074704860359,0.077372891091,0.080040921823,0.082708952555,0.085376983287,0.088045014019,0.090713044751,0.093381075483,0.096049106215,0.098717136947,0.101385167679,0.10405319841,0.106721229142,0.109389259874,0.112057290606,0.114725321338,0.11739335207,0.120061382802,0.122729413534,0.125397444266,0.128065474998,0.130733505729,0.133401536461,0.136069567193,0.138737597925,0.141405628657,0.144073659389,0.146741690121,0.149409720853,0.152077751585,0.154745782317,0.157413813049,0.16008184378,0.162749874512,0.165417905244,0.168085935976,0.170753966708,0.17342199744,0.176090028172,0.178758058904,0.181426089636,0.184094120368,0.186762151099,0.189430181831,0.192098212563,0.194766243295,0.197434274027,0.200102304759,0.202770335491,0.205438366223,0.208106396955,0.210774427687,0.213442458419,0.21611048915,0.218778519882,0.221446550614,0.224114581346,0.226782612078,0.22945064281,0.232118673542,0.234786704274,0.237454735006,0.240122765738,0.242790796469,0.245458827201,0.248126857933,0.250794888665,0.253462919397,0.256130950129,0.258798980861,0.261467011593,0.264135042325,0.266803073057,0.269471103788,0.27213913452,0.274807165252,0.277475195984,0.280143226716,0.282811257448,0.28547928818,0.288147318912,0.290815349644,0.293483380376,0.296151411108,0.298819441839,0.301487472571,0.304155503303,0.306823534035,0.309491564767,0.312159595499,0.314827626231,0.317495656963,0.320163687695,0.322831718427,0.325499749158,0.32816777989,0.330835810622,0.333503841354,0.336171872086,0.338839902818,0.34150793355,0.344175964282,0.346843995014,0.349512025746,0.352180056478,0.354848087209,0.357516117941,0.360184148673,0.362852179405,0.365520210137,0.368188240869,0.370856271601,0.373524302333,0.376192333065,0.378860363797,0.381528394528,0.38419642526,0.386864455992,0.389532486724,0.392200517456,0.394868548188,0.39753657892,0.400204609652,0.402872640384,0.405540671116,0.408208701848,0.410876732579,0.413544763311,0.416212794043,0.418880824775,0.421548855507,0.424216886239,0.426884916971,0.429552947703,0.432220978435,0.434889009167,0.437557039898,0.44022507063,0.442893101362,0.445561132094,0.448229162826,0.450897193558,0.45356522429,0.456233255022,0.458901285754,0.461569316486,0.464237347218,0.466905377949,0.469573408681,0.472241439413,0.474909470145,0.477577500877,0.480245531609,0.482913562341,0.485581593073,0.488249623805,0.490917654537,0.493585685268,0.496253716,0.498921746732,0.501589777464,0.504257808196,0.506925838928,0.50959386966,0.512261900392,0.514929931124,0.517597961856,0.520265992588,0.522934023319,0.525602054051,0.528270084783,0.530938115515,0.533606146247,0.536274176979,0.538942207711,0.541610238443,0.544278269175,0.546946299907,0.549614330638,0.55228236137,0.554950392102,0.557618422834,0.560286453566,0.562954484298,0.56562251503,0.568256109252,0.570764816556,0.573156420279,0.575442519182,0.577632808918,0.579735493893,0.581757590933,0.583705157617,0.585583466955,0.587397143071,0.589150268049,0.590846467095,0.592488977175,0.594080702892,0.595624262387,0.597122025359,0.598576144812,0.599988583731,0.601361137665,0.602695453944,0.603993048139,0.605255318216,0.606483556791,0.607678961765,0.608842645611,0.609975643507,0.611078920491,0.612153377771,0.613199858322,0.614219151847,0.615211999209,0.616179096386,0.617121098015,0.618038620577,0.618932245271,0.619802520596,0.620649964705,0.621475067521,0.622278292674,0.623060079256,0.623820843423,0.624560979866,0.625280863143,0.625980848912,0.62666127506,0.627322462736,0.627964717309,0.628588329244,0.629193574918,0.629780717367,0.63035000698,0.630901682143,0.631435969833,0.63195308617,0.632453236931,0.632936618024,0.633403415933,0.633853808129,0.634287963453,0.634706042472,0.635108197812,0.63549457447,0.635865310098,0.636220535276,0.63656037376,0.636884942716,0.637194352937,0.637488709047,0.637768109686,0.638032647688,0.638282410242,0.63851747904,0.638737930422,0.638943835499,0.639135260273,0.63931226575,0.639474908032,0.639623238415,0.639757303468,0.639877145106,0.63998280066,0.640074302933,0.640151680253,0.640214956514,0.640264151218,0.640299279501,0.640320352157,0.640327375657,0.640320352157,0.640299279501,0.640264151218,0.640214956514,0.640151680253,0.640074302933,0.63998280066,0.639877145106,0.639757303468,0.639623238415,0.639474908032,0.63931226575,0.639135260273,0.638943835499,0.638737930422,0.63851747904,0.638282410242,0.638032647688,0.637768109686,0.637488709047,0.637194352937,0.636884942716,0.63656037376,0.636220535276,0.635865310098,0.63549457447,0.635108197812,0.634706042472,0.634287963453,0.633853808129,0.633403415933,0.632936618024,0.632453236931,0.63195308617,0.631435969833,0.630901682143,0.63035000698,0.629780717367,0.629193574918,0.628588329244,0.627964717309,0.627322462736,0.62666127506,0.625980848912,0.625280863143,0.624560979866,0.623820843423,0.623060079256,0.622278292674,0.621475067521,0.620649964705,0.619802520596,0.618932245271,0.618038620577,0.617121098015,0.616179096386,0.615211999209,0.614219151847,0.613199858322,0.612153377771,0.611078920491,0.609975643507,0.608842645611,0.607678961765,0.606483556791,0.605255318216,0.603993048139,0.602695453944,0.601361137665,0.599988583731,0.598576144812,0.597122025359,0.595624262387,0.594080702892,0.592488977175,0.590846467095,0.589150268049,0.587397143071,0.585583466955,0.583705157617,0.581757590933,0.579735493893,0.577632808918,0.575442519182,0.573156420279,0.570764816556,0.568256109252,0.56562251503,0.562954484298,0.560286453566,0.557618422834,0.554950392102,0.55228236137,0.549614330638,0.546946299907,0.544278269175,0.541610238443,0.538942207711,0.536274176979,0.533606146247,0.530938115515,0.528270084783,0.525602054051,0.522934023319,0.520265992588,0.517597961856,0.514929931124,0.512261900392,0.50959386966,0.506925838928,0.504257808196,0.501589777464,0.498921746732,0.496253716,0.493585685268,0.490917654537,0.488249623805,0.485581593073,0.482913562341,0.480245531609,0.477577500877,0.474909470145,0.472241439413,0.469573408681,0.466905377949,0.464237347218,0.461569316486,0.458901285754,0.456233255022,0.45356522429,0.450897193558,0.448229162826,0.445561132094,0.442893101362,0.44022507063,0.437557039898,0.434889009167,0.432220978435,0.429552947703,0.426884916971,0.424216886239,0.421548855507,0.418880824775,0.416212794043,0.413544763311,0.410876732579,0.408208701848,0.405540671116,0.402872640384,0.400204609652,0.39753657892,0.394868548188,0.392200517456,0.389532486724,0.386864455992,0.38419642526,0.381528394528,0.378860363797,0.376192333065,0.373524302333,0.370856271601,0.368188240869,0.365520210137,0.362852179405,0.360184148673,0.357516117941,0.354848087209,0.352180056478,0.349512025746,0.346843995014,0.344175964282,0.34150793355,0.338839902818,0.336171872086,0.333503841354,0.330835810622,0.32816777989,0.325499749158,0.322831718427,0.320163687695,0.317495656963,0.314827626231,0.312159595499,0.309491564767,0.306823534035,0.304155503303,0.301487472571,0.298819441839,0.296151411108,0.293483380376,0.290815349644,0.288147318912,0.28547928818,0.282811257448,0.280143226716,0.277475195984,0.274807165252,0.27213913452,0.269471103788,0.266803073057,0.264135042325,0.261467011593,0.258798980861,0.256130950129,0.253462919397,0.250794888665,0.248126857933,0.245458827201,0.242790796469,0.240122765738,0.237454735006,0.234786704274,0.232118673542,0.22945064281,0.226782612078,0.224114581346,0.221446550614,0.218778519882,0.21611048915,0.213442458419,0.210774427687,0.208106396955,0.205438366223,0.202770335491,0.200102304759,0.197434274027,0.194766243295,0.192098212563,0.189430181831,0.186762151099,0.184094120368,0.181426089636,0.178758058904,0.176090028172,0.17342199744,0.170753966708,0.168085935976,0.165417905244,0.162749874512,0.16008184378,0.157413813049,0.154745782317,0.152077751585,0.149409720853,0.146741690121,0.144073659389,0.141405628657,0.138737597925,0.136069567193,0.133401536461,0.130733505729,0.128065474998,0.125397444266,0.122729413534,0.120061382802,0.11739335207,0.114725321338,0.112057290606,0.109389259874,0.106721229142,0.10405319841,0.101385167679,0.098717136947,0.096049106215,0.093381075483,0.090713044751,0.088045014019,0.085376983287,0.082708952555,0.080040921823,0.077372891091,0.074704860359,0.072071266405,0.069562559101,0.067170955378,0.064884856475,0.062694566739,0.060591881764,0.058569784724,0.05662221804,0.054743908702,0.052930232586,0.051177107608,0.049480908562,0.047838398482,0.046246672765,0.044703113271,0.043205350298,0.041751230845,0.040338791926,0.038966237992,0.037631921713,0.036334327518,0.035072057441,0.033843818866,0.032648413892,0.031484730046,0.03035173215,0.029248455166,0.028173997886,0.027127517335,0.02610822381,0.025115376448,0.024148279271,0.023206277642,0.02228875508,0.021395130387,0.020524855061,0.019677410952,0.018852308136,0.018049082983,0.017267296402,0.016506532234,0.015766395791,0.015046512514,0.014346526745,0.013666100597,0.013004912921,0.012362658348,0.011739046413,0.011133800739,0.01054665829,0.009977368677,0.009425693514,0.008891405824,0.008374289487,0.007874138727,0.007390757633,0.006923959724,0.006473567528,0.006039412204,0.005621333185,0.005219177845,0.004832801187,0.004462065559,0.004106840381,0.003767001897,0.003442432941,0.00313302272,0.00283866661,0.002559265971,0.002294727969,0.002044965415,0.001809896617,0.001589445235,0.001383540158,0.001192115384,0.001015109907,0.000852467625,0.000704137242,0.000570072189,0.000450230551,0.000344574997,0.000253072724,0.000175695404,0.000112419143,6.3224439e-05,2.8096156e-05,7.0235e-06]
@@ -1565,7 +1599,7 @@ class ThreadProfileCreateBSWObjectCommandClass(ThreadProfileCreateObjectCommandC
         # Default: 1/4-20 BSW (common size; basic minor ~4.72 mm)
         default = bsw_presets_data[7]
         obj = super(ThreadProfileCreateBSWObjectCommandClass, self).makeThreadProfile(
-            name="BSWThreadProfile",
+            name="WhitworthThreadProfile",
             internal_data=internal_bsw_data,
             external_data=external_bsw_data,
             presets=bsw_presets_data,
